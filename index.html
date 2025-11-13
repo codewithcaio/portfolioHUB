@@ -38,7 +38,7 @@
         <h2 class="sobre-titulo">Currículo</h2>
         <div class="sobre-caixa">
             <ul>
-                <li><strong>Formação:</strong> Uniceub, Análise e desenvolvimentode sistemas (2023-2025)</li>
+                <li><strong>Formação:</strong> Uniceub, Análise e desenvolvimento de sistemas (2023-2025)</li>
                 <li><strong>2° Formação:</strong> Uniceub, Bacharelado ciências da computação (2025-2027)</li>
                 <li><strong>Experiências:</strong> EBSERH - Estagiário de Data Analyst (2024-presente), Gestão de dados hospitalares</li>
                 <li><strong>Habilidades Técnicas:</strong> Python, C#, SQL, MySQL, Power BI, HTML, CSS, JS</li>
@@ -51,31 +51,11 @@
 
     <!-- Projetos -->
     <section class="projetos" id="projetos">
-        <h2 class="projetos-titulo">Projetos Relevantes</h2>
-        <div class="projetos-caixa">
-            <div class="projetos-card">
-                <img src="conversor de moedas.png" alt="Conversor de Moedas" class="projetos-imagem">
-                <div class="caixa-texto-projeto">
-                    <h3 class="info-projetos">Conversor de Moedas Online</h3>
-                    <p class="paragrafo-projeto">
-                        Aplicação web para conversão de moedas BRL/USD com interface amigável.<br>
-                        <strong>Tecnologias:</strong> HTML, CSS, JS, API de câmbio.<br>
-                        <a href="https://github.com/codewithcaio/conversor-moedas" target="_blank" rel="noopener">Ver no GitHub</a>
-                    </p>
-                </div>
-            </div>
-            <div class="projetos-card">
-                <img src="bot.png" alt="Bot Organizador de Arquivos" class="projetos-imagem">
-                <div class="caixa-texto-projeto">
-                    <h3 class="info-projetos">Organizador de Arquivos em Python</h3>
-                    <p class="paragrafo-projeto">
-                        Script automatizado para organização de arquivos por tipo, facilitando a gestão de pastas.<br>
-                        <strong>Tecnologias:</strong> Python.<br>
-                        <a href="https://github.com/codewithcaio/BOT-organizador-arquivos" target="_blank" rel="noopener">Ver no GitHub</a>
-                    </p>
-                </div>
-            </div>
-        </div>
+        <h2 class="projetos-titulo">Projetos Pessoais</h2>
+        <div class="projetos-caixa" id="projetos-pessoais"></div>
+
+        <h2 class="projetos-titulo">Projetos Acadêmicos</h2>
+        <div class="projetos-caixa" id="projetos-academicos"></div>
     </section>
 
     <!-- Habilidades -->
@@ -92,7 +72,6 @@
                 <li>JavaScript <span>●●●○○</span></li>
                 <li>Trabalho em equipe, comunicação, agilidade, aprendizado rápido</li>
             </ul>
-
         </div>
     </section>
 
@@ -111,5 +90,89 @@
         </div>
     </section>
 
+    <script>
+    function gerarCardProjeto(item) {
+        const card = document.createElement('div');
+        card.className = 'projetos-card';
+
+        const img = document.createElement('img');
+        img.className = 'projetos-imagem';
+
+        // Associa imagem personalizada
+        if (item.name.toLowerCase() === 'bot-organizador-arquivos') {
+            img.src = 'papel-da-mentoria-capa.jpg';
+            img.alt = 'Bot Organizador de Arquivos';
+        } else if (item.name.toLowerCase() === 'portfoliohub') {
+            img.src = 'academico.png';
+            img.alt = 'PortfolioHub';
+        } else {
+            img.src = 'https://raw.githubusercontent.com/github/explore/main/topics/github/github.png';
+            img.alt = item.name;
+        }
+
+        img.onerror = function() {
+            this.onerror = null;
+            this.src = 'https://raw.githubusercontent.com/github/explore/main/topics/github/github.png';
+        };
+
+        const caixaTexto = document.createElement('div');
+        caixaTexto.className = 'caixa-texto-projeto';
+
+        const descricao = document.createElement('p');
+        descricao.className = 'paragrafo-projeto';
+
+        const link = document.createElement('a');
+        link.target = '_blank';
+        link.rel = 'noopener';
+        link.textContent = 'Ver no GitHub';
+
+        // Card de BOT-organizador-arquivos
+        if(item.name.toLowerCase() === 'bot-organizador-arquivos') {
+            descricao.textContent = 'Projetos desenvolvidos de forma autônoma, com o objetivo de praticar habilidades, explorar novas tecnologias e resolver problemas do dia a dia.';
+            link.href = 'https://github.com/codewithcaio/meus-projetos/tree/main/projetos-pessoais/BOT-organizador-arquivos';
+        }
+        // Card de portfolioHUB
+        else if(item.name.toLowerCase() === 'portfoliohub') {
+            descricao.textContent = 'Projetos realizados como parte de cursos, disciplinas, bootcamps ou desafios educacionais.';
+            link.href = 'https://github.com/codewithcaio/meus-projetos/tree/main/projetos-academicos';
+        }
+        else {
+            descricao.textContent = 'Projeto hospedado no GitHub. Clique para acessar o conteúdo desse projeto.';
+            link.href = item.html_url;
+        }
+
+        caixaTexto.appendChild(descricao);
+        caixaTexto.appendChild(link);
+
+        card.appendChild(img);
+        card.appendChild(caixaTexto);
+
+        return card;
+    }
+
+    // Apenas o card BOT-organizador-arquivos em pessoais
+    fetch('https://api.github.com/repos/codewithcaio/meus-projetos/contents/projetos-pessoais')
+        .then(response => response.json())
+        .then(data => {
+            const caixa = document.getElementById('projetos-pessoais');
+            caixa.innerHTML = "";
+            const projeto = data.find(item => item.name.toLowerCase() === 'bot-organizador-arquivos');
+            if(projeto) {
+                caixa.appendChild(gerarCardProjeto(projeto));
+            }
+        });
+
+    // Apenas o card portfolioHUB em acadêmicos
+    fetch('https://api.github.com/repos/codewithcaio/meus-projetos/contents/projetos-academicos')
+        .then(response => response.json())
+        .then(data => {
+            const caixa = document.getElementById('projetos-academicos');
+            caixa.innerHTML = "";
+            const projeto = data.find(item => item.name.toLowerCase() === 'portfoliohub');
+            if(projeto) {
+                caixa.appendChild(gerarCardProjeto(projeto));
+            }
+        });
+    </script>
 </body>
 </html>

@@ -29,12 +29,10 @@ body {
     top: 0;
     width: 100%;
     z-index: 100;
-    /* padding: 0.35rem 0;   /* altura bem reduzida */
-    background: rgba(15, 23, 42, 0.5);  /* mais opaca, ainda mais fina */
+    background: rgba(15, 23, 42, 0.5);
     box-shadow: 0 2px 6px rgba(0,0,0,0.04);
     transition: background 0.3s, padding 0.3s;
 }
-
 
 .menu {
     display: flex;
@@ -326,4 +324,3 @@ cite {
 .sobre-caixa a:hover {
     color: var(--primaria);
 }
-
