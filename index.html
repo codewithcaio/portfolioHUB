@@ -111,5 +111,87 @@
         </div>
     </section>
 
-</body>
-</html>
+    </section>
+
+<script>
+    window.addEventListener('load', () => {
+        carregarPerfilEProjetos();
+    });
+
+    function carregarPerfilEProjetos() {
+        const username = 'codewithcaio'; // Seu usuário do GitHub
+
+        // 1. Carregar Perfil (Atualiza seu cabeçalho)
+        fetch(`https://api.github.com/users/${username}`)
+            .then(response => response.json())
+            .then(user => {
+                document.querySelector('.foto-perfil').src = user.avatar_url;
+                document.querySelector('.h1').textContent = user.name || user.login;
+                document.querySelector('.cabecalho-subtitulo').textContent = user.bio || 'Usuário do GitHub';
+            });
+
+        // 2. Carregar Projetos
+        fetch(`https://api.github.com/users/${username}/repos`)
+            .then(response => response.json())
+            .then(projetos => {
+                const container = document.getElementById('projetos-caixa');
+
+                // NÃO limpa o container, para manter seus projetos fixos
+                // container.innerHTML = ''; 
+
+                projetos.forEach(item => {
+                    // Opcional: Não adiciona os projetos que você já colocou manualmente
+                    if (item.name === 'conversor-moedas' || item.name === 'BOT-organizador-arquivos') {
+                        return; 
+                    }
+
+                    const card = gerarCardProjetoDinamico(item);
+                    container.appendChild(card);
+                });
+            });
+    }
+
+        // Função para criar os cards dinamicamente
+        function gerarCardProjetoDinamico(item) {
+            const card = document.createElement('div');
+            card.className = 'projetos-card';
+
+            // Tenta pegar a imagem de 'owner' (dono do repo)
+            const img = document.createElement('img');
+            img.className = 'projetos-imagem';
+            img.src = `https://raw.githubusercontent.com/${item.full_name}/main/capa.png`; // Tenta buscar uma imagem 'capa.png'
+            img.alt = item.name;
+            // Se falhar, usa uma imagem padrão do GitHub
+            img.onerror = function() {
+                this.onerror = null;
+                this.src = 'https://raw.githubusercontent.com/github/explore/main/topics/github/github.png';
+            };
+
+            const caixaTexto = document.createElement('div');
+            caixaTexto.className = 'caixa-texto-projeto';
+
+            const titulo = document.createElement('h3');
+            titulo.textContent = item.name;
+
+            const descricao = document.createElement('p');
+            descricao.className = 'paragrafo-projeto';
+            descricao.textContent = item.description || 'Projeto sem descrição.';
+
+            const link = document.createElement('a');
+            link.href = item.html_url;
+            link.target = '_blank';
+            link.rel = 'noopener';
+            link.textContent = 'Ver no GitHub';
+
+            caixaTexto.appendChild(titulo);
+            caixaTexto.appendChild(descricao);
+            caixaTexto.appendChild(link);
+            card.appendChild(img);
+            card.appendChild(caixaTexto);
+
+            return card;
+        }
+    </script>
+    </body>
+    </html>
+
